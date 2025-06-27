@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 #!/usr/bin/env Rscript
 
 # GitHub Actions version of MILB stats script
 # This handles Google Sheets authentication via service account
+=======
+>>>>>>> 33782b2d3e3138835d3dc70d226e39e4dc833bd9
 
 library(tidyverse)
 library(baseballr)
@@ -19,10 +22,13 @@ if (service_account_key != "") {
   
   # Clean up
   unlink(temp_key_file)
+<<<<<<< HEAD
   cat("Authenticated with Google Sheets via service account\n")
 } else {
   cat("No service account key found, trying default authentication\n")
   gs4_auth()
+=======
+>>>>>>> 33782b2d3e3138835d3dc70d226e39e4dc833bd9
 }
 
 # Configuration
@@ -52,9 +58,15 @@ update_milb_stats <- function() {
     error_count <- 0
     
     for (i in 1:nrow(playerid_data)) {
+<<<<<<< HEAD
       current_id <- playerid_data$fangraphs_id[i]
       player_name <- playerid_data$name[i]
       player_position <- playerid_data$position[i]
+=======
+      current_id <- playerid_data$FangraphsID[i]
+      player_name <- playerid_data$Name[i]
+      player_position <- playerid_data$Position[i]
+>>>>>>> 33782b2d3e3138835d3dc70d226e39e4dc833bd9
       
       log_message(paste("Processing", i, "of", nrow(playerid_data), ":", player_name))
       
