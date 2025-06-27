@@ -2,40 +2,65 @@ name: MILB Stats Update
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC (10 PM EST)
+    - cron: '0 13 * * *'  # Daily at 1 PM UTC (8 AM EST)
   workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
   update-stats:
     runs-on: ubuntu-latest
     
+    # Stop running after September 1st, 2024
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.run_number <= 150) }}
+    
     steps:
+    - name: Check current date
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+    
+    - name: Check if before September 1st
+      id: check_date
+      run: |
+        if [[ "${{ steps.date.outputs.date }}" < "2024-09-01" ]]; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+        else
+          echo "should_run=false" >> $GITHUB_OUTPUT
+        fi
+    
     - name: Checkout repository
+      if: steps.check_date.outputs.should_run == 'true'
       uses: actions/checkout@v4
     
     - name: Set up R
+      if: steps.check_date.outputs.should_run == 'true'
       uses: r-lib/actions/setup-r@v2
       with:
         r-version: '4.2'
     
     - name: Install system dependencies
+      if: steps.check_date.outputs.should_run == 'true'
       run: |
         sudo apt-get update
         sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
     
     - name: Install R packages
+      if: steps.check_date.outputs.should_run == 'true'
       run: |
         R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
     
     - name: Run MILB stats update
+      if: steps.check_date.outputs.should_run == 'true'
       run: Rscript milbstats_github.R
       env:
         GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
     
     - name: Upload log file as artifact
+      if: always() && steps.check_date.outputs.should_run == 'true'
       uses: actions/upload-artifact@v3
-      if: always()
       with:
         name: milbstats-logs-${{ github.run_number }}
         path: milbstats_update.log
-        retention-days: 30 
+        retention-days: 30
+    
+    - name: Skip message
+      if: steps.check_date.outputs.should_run == 'false'
+      run: echo "Skipping update - past September 1st, 2024" 
