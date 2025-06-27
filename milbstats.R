@@ -17,24 +17,24 @@ player_logs_list <- list()
 # Loop through each player in playerid_data
 for (i in 1:nrow(playerid_data)) {
   # Get current player's FG ID
-  current_id <- playerid_data$fangraphs_id[i]
+  current_id <- playerid_data$FangraphsID[i]
   
   # Get player name for reference
-  player_name <- playerid_data$name[i]
+  player_name <- playerid_data$Name[i]
   
   # Get player position
-  player_position <- playerid_data$position[i]
+  player_position <- playerid_data$Position[i]
   
   # Try to get game logs, with error handling
   tryCatch({
     # Get game logs based on position
     if (player_position == "H") {
       # Use batter game logs for position "H"
-      player_logs <- fg_milb_batter_game_logs(as.character(current_id), 2023)
+      player_logs <- fg_milb_batter_game_logs(as.character(current_id), 2025)
       print(paste("Retrieved BATTER logs for", player_name))
     } else {
       # Use pitcher game logs for other positions
-      player_logs <- fg_milb_pitcher_game_logs(as.character(current_id), 2023)
+      player_logs <- fg_milb_pitcher_game_logs(as.character(current_id), 2025)
       print(paste("Retrieved PITCHER logs for", player_name))
     }
     
@@ -94,6 +94,8 @@ for (player_name in names(player_logs_list)) {
     print(paste("Failed to write data for", player_name, ":", e$message))
   })
 }
+
+
 
 
 
