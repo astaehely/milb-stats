@@ -1,0 +1,41 @@
+name: MILB Stats Update
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC (10 PM EST)
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.2'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+    
+    - name: Install R packages
+      run: |
+        R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
+    
+    - name: Run MILB stats update
+      run: Rscript milbstats_auto.R
+      env:
+        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+    
+    - name: Upload log file as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: milbstats-logs-${{ github.run_number }}
+        path: milbstats_update.log
+        retention-days: 30 
