@@ -59,9 +59,9 @@ update_milb_stats <- function() {
     
     for (i in 1:nrow(playerid_data)) {
 <<<<<<< HEAD
-      current_id <- playerid_data$fangraphs_id[i]
-      player_name <- playerid_data$name[i]
-      player_position <- playerid_data$position[i]
+      current_id <- playerid_data$FangraphsID[i]
+      player_name <- playerid_data$Name[i]
+      player_position <- playerid_data$Position[i]
 =======
       current_id <- playerid_data$FangraphsID[i]
       player_name <- playerid_data$Name[i]
