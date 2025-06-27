@@ -28,9 +28,9 @@ jobs:
         R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
     
     - name: Run MILB stats update
-      run: Rscript milbstats_auto.R
+      run: Rscript milbstats_github.R
       env:
-        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+        GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
     
     - name: Upload log file as artifact
       uses: actions/upload-artifact@v3
