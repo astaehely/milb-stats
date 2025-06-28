@@ -42,11 +42,27 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
     
-    - name: Install R packages
+    - name: Install R packages step by step
       if: steps.check_date.outputs.should_run == 'true'
       run: |
-        R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
-        R -e "library(tidyverse); library(baseballr); library(googlesheets4); cat('All packages loaded successfully\n')"
+        echo "Setting up R package installation..."
+        R -e "options(repos = c(CRAN = 'https://cran.rstudio.com/'))"
+        
+        echo "Installing tidyverse..."
+        R -e "tryCatch({install.packages('tidyverse', dependencies=TRUE); cat('tidyverse installed\n')}, error=function(e) {cat('Error installing tidyverse:', e$message, '\n')})"
+        
+        echo "Installing baseballr..."
+        R -e "tryCatch({install.packages('baseballr', dependencies=TRUE); cat('baseballr installed\n')}, error=function(e) {cat('Error installing baseballr:', e$message, '\n')})"
+        
+        echo "Installing googlesheets4..."
+        R -e "tryCatch({install.packages('googlesheets4', dependencies=TRUE); cat('googlesheets4 installed\n')}, error=function(e) {cat('Error installing googlesheets4:', e$message, '\n')})"
+        
+        echo "Verifying installations..."
+        R -e "tryCatch({library(tidyverse); cat('tidyverse loaded successfully\n')}, error=function(e) {cat('Error loading tidyverse:', e$message, '\n')})"
+        R -e "tryCatch({library(baseballr); cat('baseballr loaded successfully\n')}, error=function(e) {cat('Error loading baseballr:', e$message, '\n')})"
+        R -e "tryCatch({library(googlesheets4); cat('googlesheets4 loaded successfully\n')}, error=function(e) {cat('Error loading googlesheets4:', e$message, '\n')})"
+        
+        echo "Package installation complete!"
     
     - name: Run MILB stats update
       if: steps.check_date.outputs.should_run == 'true'
