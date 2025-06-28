@@ -61,10 +61,10 @@ update_milb_stats <- function() {
       tryCatch({
         # Get game logs based on position
         if (player_position == "H") {
-          player_logs <- fg_milb_batter_game_logs(as.character(current_id), 2023)
+          player_logs <- fg_milb_batter_game_logs(as.character(current_id), 2025)
           log_message(paste("Retrieved BATTER logs for", player_name))
         } else {
-          player_logs <- fg_milb_pitcher_game_logs(as.character(current_id), 2023)
+          player_logs <- fg_milb_pitcher_game_logs(as.character(current_id), 2025)
           log_message(paste("Retrieved PITCHER logs for", player_name))
         }
         
