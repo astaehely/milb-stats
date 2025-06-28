@@ -9,7 +9,7 @@ jobs:
   update-stats:
     runs-on: ubuntu-latest
     
-    # Stop running after September 1st, 2024
+    # Stop running after September 1st, 2025
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.run_number <= 150) }}
     
     steps:
@@ -20,7 +20,7 @@ jobs:
     - name: Check if before September 1st
       id: check_date
       run: |
-        if [[ "${{ steps.date.outputs.date }}" < "2024-09-01" ]]; then
+        if [[ "${{ steps.date.outputs.date }}" < "2025-09-01" ]]; then
           echo "should_run=true" >> $GITHUB_OUTPUT
         else
           echo "should_run=false" >> $GITHUB_OUTPUT
@@ -63,4 +63,4 @@ jobs:
     
     - name: Skip message
       if: steps.check_date.outputs.should_run == 'false'
-      run: echo "Skipping update - past September 1st, 2024" 
+      run: echo "Skipping update - past September 1st, 2025" 
