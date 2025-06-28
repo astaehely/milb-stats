@@ -42,19 +42,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
     
-    - name: Cache R packages
-      if: steps.check_date.outputs.should_run == 'true'
-      uses: actions/cache@v3
-      with:
-        path: ${{ env.R_LIBS_USER }}
-        key: ${{ runner.os }}-r-packages-${{ hashFiles('.github/workflows/milbstats.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-r-packages-
-    
     - name: Install R packages
       if: steps.check_date.outputs.should_run == 'true'
       run: |
-        R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/')"
+        R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
+        R -e "library(tidyverse); library(baseballr); library(googlesheets4); cat('All packages loaded successfully\n')"
     
     - name: Run MILB stats update
       if: steps.check_date.outputs.should_run == 'true'
