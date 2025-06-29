@@ -3,7 +3,7 @@ library(baseballr)
 library(googlesheets4)
 
 
-sheetslink <- "https://docs.google.com/spreadsheets/d/1c8Y0IOksC6GcqqnHQiMgCpoRKIY2Ks6aHZcvrfmNzzc/edit?usp=sharing"
+sheetslink <- "GOOGLE_SHEETS_LINK"
 
 # Read the 'PlayerID' sheet into a data frame
 playerid_data <- read_sheet(sheetslink, sheet = "PlayerID")
