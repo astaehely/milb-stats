@@ -89,7 +89,7 @@ if (service_account_key != "") {
 }
 
 # Configuration
-sheetslink <- "https://docs.google.com/spreadsheets/d/1c8Y0IOksC6GcqqnHQiMgCpoRKIY2Ks6aHZcvrfmNzzc/edit?usp=sharing"
+sheetslink <- "GOOGLE_SHEETS_LINK"
 LOG_FILE <- "milbstats_update.log"
 
 # Logging function
