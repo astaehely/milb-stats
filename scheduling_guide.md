@@ -15,19 +15,9 @@ crontab -e
 
 Add one of these lines:
 
-**Daily at 2 AM:**
-```bash
-0 2 * * * cd /Users/aaronstaehely/Documents/Sabermetrics\ work/Test\ MILB\ stats && Rscript milbstats_auto.R
-```
-
-**Every 6 hours:**
-```bash
-0 */6 * * * cd /Users/aaronstaehely/Documents/Sabermetrics\ work/Test\ MILB\ stats && Rscript milbstats_auto.R
-```
-
 **Weekdays only at 8 AM:**
 ```bash
-0 8 * * 1-5 cd /Users/aaronstaehely/Documents/Sabermetrics\ work/Test\ MILB\ stats && Rscript milbstats_auto.R
+0 8 * * 1-5 cd /Users/YourName/Documents/FilePath/Test\ MILB\ stats && Rscript milbstats_auto.R
 ```
 
 ### Step 3: Check if cron is running
@@ -41,7 +31,7 @@ sudo launchctl load -w /System/Library/LaunchDaemons/com.vix.cron.plist
 Create `run_milbstats.bat`:
 ```batch
 @echo off
-cd "C:\Users\YourUsername\Documents\Sabermetrics work\Test MILB stats"
+cd "C:\Users\YourUsername\Documents\FilePath\Test MILB stats"
 Rscript milbstats_auto.R
 pause
 ```
@@ -53,7 +43,7 @@ pause
 4. Trigger: Daily
 5. Start time: 2:00 AM
 6. Action: Start a program
-7. Program: `C:\Users\YourUsername\Documents\Sabermetrics work\Test MILB stats\run_milbstats.bat`
+7. Program: `C:\Users\YourUsername\Documents\FilePath\Test MILB stats\run_milbstats.bat`
 8. Finish
 
 ## Option 3: RStudio with taskscheduleR
@@ -67,48 +57,17 @@ install.packages("taskscheduleR")
 ```r
 library(taskscheduleR)
 
-# Schedule daily at 2 AM
+# Schedule daily at 8 AM
 taskscheduler_create(
   taskname = "MILB_Stats_Update",
   rscript = "milbstats_auto.R",
   schedule = "DAILY",
-  starttime = "02:00",
+  starttime = "08:00",
   startdate = format(Sys.Date(), "%Y/%m/%d")
 )
 ```
 
-## Option 4: GitHub Actions (Cloud-based)
 
-Create `.github/workflows/milbstats.yml`:
-```yaml
-name: MILB Stats Update
-
-on:
-  schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
-  workflow_dispatch:  # Manual trigger
-
-jobs:
-  update-stats:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up R
-      uses: r-lib/actions/setup-r@v1
-      with:
-        r-version: '4.2'
-    
-    - name: Install packages
-      run: |
-        R -e "install.packages(c('tidyverse', 'baseballr', 'googlesheets4'))"
-    
-    - name: Run update script
-      run: Rscript milbstats_auto.R
-      env:
-        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
-```
 
 ## Monitoring and Logs
 
